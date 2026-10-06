@@ -14,6 +14,8 @@
   }
   if (ok) return;
 
+  /* Tells the page to wait before opening the booking step (it would steal focus from this screen). */
+  window.__bookingGateLocked = true;
   const hide = document.createElement('style');
   hide.textContent = 'body{display:none!important}';
   document.documentElement.appendChild(hide);
@@ -41,6 +43,11 @@
         <button style="width:100%;padding:9px;border:none;border-radius:4px;background:#085ce5;color:#fff;font:inherit;font-weight:600;cursor:pointer">Sign in</button>
       </form>`;
     document.documentElement.appendChild(wrap);
+    /* The booking step opens behind this screen and traps Tab / Escape — keep keys here until signed in. */
+    const keepKeys = (e) => {
+      if (e.key === 'Tab' || e.key === 'Escape') e.stopImmediatePropagation();
+    };
+    window.addEventListener('keydown', keepKeys, true);
     const err = wrap.querySelector('#g-e');
     wrap.querySelector('#g-u').focus();
     wrap.querySelector('form').addEventListener('submit', async (e) => {
@@ -60,8 +67,11 @@
       } catch (e2) {
         /* fine — signed in for this page view only */
       }
+      window.removeEventListener('keydown', keepKeys, true);
       wrap.remove();
       hide.remove();
+      window.__bookingGateLocked = false;
+      window.dispatchEvent(new Event('booking-gate-unlocked'));
     });
   }
 
