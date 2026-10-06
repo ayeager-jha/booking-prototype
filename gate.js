@@ -4,7 +4,7 @@
  * Set the username/password with set-password.sh, which stores only a SHA-256 hash here.
  */
 (function () {
-  const GATE_HASH = '';
+  const GATE_HASH = '69b879b8e9d2fa3c6cbd13a79c7f1dd3447d93b9f84f60b8d85e1c7a80829633';
   const KEY = 'jh-booking-proto-ok';
   let ok = false;
   try {
